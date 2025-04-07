@@ -1364,6 +1364,54 @@ body::before {
     overflow: hidden;
     margin-bottom: 8px;
     border: 1px solid var(--border-color);
+    position: relative;
+    transition: transform var(--transition-fast);
+}
+
+.white-preview {
+    --preview-bg: #ffffff;
+    --preview-surface: #ffffff;
+    --preview-row: #f8fafc;
+    --preview-text: #0f172a;
+    background-color: var(--preview-bg);
+}
+
+.white-preview .theme-preview-header {
+    background-color: var(--preview-surface);
+    color: var(--preview-text);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.white-preview .theme-preview-body {
+    background-color: var(--preview-bg);
+}
+
+.white-preview .theme-preview-row {
+    background-color: var(--preview-row);
+    border-color: #e2e8f0;
+}
+
+.gray-dark-preview {
+    --preview-bg: #1a1a1a;
+    --preview-surface: #262626;
+    --preview-row: #333333;
+    --preview-text: #e2e8f0;
+    background-color: var(--preview-bg);
+}
+
+.gray-dark-preview .theme-preview-header {
+    background-color: var(--preview-surface);
+    color: var(--preview-text);
+    border-bottom: 1px solid #4b5563;
+}
+
+.gray-dark-preview .theme-preview-body {
+    background-color: var(--preview-bg);
+}
+
+.gray-dark-preview .theme-preview-row {
+    background-color: var(--preview-row);
+    border-color: #4b5563;
 }
 
 .theme-preview-header {
@@ -1394,17 +1442,98 @@ body::before {
 
 /* Светлая тема */
 .classic-preview {
-    background: #ffffff;
+    --preview-bg: #f8f9fc;
+    --preview-surface: #ffffff;
+    --preview-row: #f1f5f9;
+    --preview-text: #0f172a;
+    background-color: var(--preview-bg);
 }
 
 .classic-preview .theme-preview-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    color: #333333;
+    background-color: var(--preview-surface);
+    color: var(--preview-text);
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.classic-preview .theme-preview-body {
+    background-color: var(--preview-bg);
 }
 
 .classic-preview .theme-preview-row {
-    background: #e9ecef;
+    background-color: var(--preview-row);
+    border-color: #cbd5e1;
+}
+
+.dark-preview {
+    --preview-bg: #0f172a;
+    --preview-surface: #1e293b;
+    --preview-row: #334155;
+    --preview-text: #f1f5f9;
+    background-color: var(--preview-bg);
+}
+
+.dark-preview .theme-preview-header {
+    background-color: var(--preview-surface);
+    color: var(--preview-text);
+    border-bottom: 1px solid #334155;
+}
+
+.dark-preview .theme-preview-body {
+    background-color: var(--preview-bg);
+}
+
+.dark-preview .theme-preview-row {
+    background-color: var(--preview-row);
+    border-color: #334155;
+}
+
+.blue-preview {
+    --preview-bg: #1e3a8a;
+    --preview-surface: #1e40af;
+    --preview-row: #2563eb;
+    --preview-text: #f0f9ff;
+    background-color: var(--preview-bg);
+}
+
+.blue-preview .theme-preview-header {
+    background-color: var(--preview-surface);
+    color: var(--preview-text);
+    border-bottom: 1px solid #3b82f6;
+}
+
+.blue-preview .theme-preview-body {
+    background-color: var(--preview-bg);
+}
+
+.blue-preview .theme-preview-row {
+    background-color: var(--preview-row);
+    border-color: #3b82f6;
+}
+
+.theme-preview-header {
+    height: 25%;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.theme-preview-body {
+    height: 75%;
+    padding: 4px;
+}
+
+.theme-preview-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.theme-preview-row {
+    height: 4px;
+    margin: 4px 0;
+    border-radius: 2px;
+    opacity: 0.7;
 }
 
 /* Тёмная тема */

@@ -15,6 +15,7 @@ echo  [2] Собрать инсталлятор (Windows)
 echo  [3] Собрать портативную версию (Windows)
 echo  [4] Установить/обновить зависимости
 echo  [5] Очистить кэш и временные файлы
+echo  [6] Опубликовать обновление на GitHub
 echo  [0] Выход
 echo.
 
@@ -25,6 +26,7 @@ if "%choice%"=="2" goto installer
 if "%choice%"=="3" goto portable
 if "%choice%"=="4" goto dependencies
 if "%choice%"=="5" goto clean
+if "%choice%"=="6" goto publish
 if "%choice%"=="0" goto exit
 goto menu
 
@@ -76,6 +78,30 @@ if exist package-lock.json del package-lock.json
 echo.
 echo Очистка завершена.
 pause
+goto menu
+
+:publish
+echo.
+echo Для публикации обновления вам понадобится токен доступа GitHub.
+echo Если у вас его нет, создайте его в настройках GitHub (Settings -^> Developer settings -^> Personal access tokens).
+echo.
+echo Перед публикацией убедитесь, что:
+echo  1. Вы обновили версию в package.json
+echo  2. У вас есть права на репозиторий
+echo  3. Вы сохранили токен GitHub как GH_TOKEN в переменных среды
+echo.
+set /p confirm="Продолжить публикацию? (y/n): "
+if /i "%confirm%"=="y" (
+    cd ..
+    npm run publish
+    echo.
+    echo Публикация завершена.
+    pause
+) else (
+    echo.
+    echo Публикация отменена.
+    pause
+)
 goto menu
 
 :exit

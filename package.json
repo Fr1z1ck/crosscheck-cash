@@ -9,6 +9,7 @@
     "dev": "electron . --dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
+    "publish": "electron-builder -p always",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
@@ -38,10 +39,20 @@
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Fr1z1ck",
+        "repo": "crosscheck-cash"
+      }
+    ]
   },
   "devDependencies": {
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.7"
   }
 }

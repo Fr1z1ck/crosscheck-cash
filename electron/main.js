@@ -1,16 +1,38 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 const { autoUpdater } = require('electron-updater');
 
 // Определяем, запущено ли приложение в режиме разработки
 const isDev = process.argv.includes('--dev');
 const isForceUpdate = process.argv.includes('--force-update');
 
-// Настройка логирования для отладки
-autoUpdater.logger = require('electron-log');
-autoUpdater.logger.transports.file.level = 'info';
-console.log('Логи автообновления будут в:', autoUpdater.logger.transports.file.getFile().path);
+// Создаем свою простую систему логирования
+const logFilePath = path.join(app.getPath('userData'), 'logs', 'app.log');
+
+// Создаем папку для логов, если она не существует
+try {
+  const logsDir = path.dirname(logFilePath);
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+} catch (err) {
+  console.error('Ошибка при создании папки логов:', err);
+}
+
+// Простая функция для логирования
+function logToFile(message) {
+  try {
+    const timestamp = new Date().toISOString();
+    const logMessage = `${timestamp} - ${message}\n`;
+    console.log(logMessage.trim());
+    
+    fs.appendFileSync(logFilePath, logMessage);
+  } catch (err) {
+    console.error('Ошибка при записи в лог-файл:', err);
+  }
+}
 
 // Настройки автообновления
 autoUpdater.autoDownload = !isDev || isForceUpdate;
@@ -124,7 +146,7 @@ function createWindow() {
               type: 'info',
               title: 'Диагностика обновлений',
               message: 'Информация о системе обновлений',
-              detail: `Версия: ${app.getVersion()}\nРежим разработки: ${isDev}\nFeedURL: ${autoUpdater.getFeedURL() || 'не установлен'}\nАвтозагрузка: ${autoUpdater.autoDownload}`,
+              detail: `Версия: ${app.getVersion()}\nРежим разработки: ${isDev}\nФайл логов: ${logFilePath}\nАвтозагрузка: ${autoUpdater.autoDownload}`,
               buttons: ['OK']
             });
           }
@@ -140,6 +162,8 @@ function createWindow() {
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
+  
+  logToFile('Приложение запущено. Версия: ' + app.getVersion());
 }
 
 // Этот метод будет вызван, когда Electron закончит инициализацию
@@ -149,7 +173,7 @@ app.on('ready', () => {
   // Проверка обновлений при запуске
   setTimeout(() => {
     if (!isDev || isForceUpdate) {
-      console.log('Проверка обновлений при запуске...');
+      logToFile('Проверка обновлений при запуске...');
       autoUpdater.checkForUpdatesAndNotify();
     }
   }, 3000); // Небольшая задержка для инициализации окна
@@ -173,13 +197,11 @@ app.on('activate', function() {
 
 // Обработчики событий обновления
 autoUpdater.on('checking-for-update', () => {
-  console.log('Проверка обновлений...');
-  autoUpdater.logger.info('Проверка обновлений...');
+  logToFile('Проверка обновлений...');
 });
 
 autoUpdater.on('update-available', (info) => {
-  console.log('Доступно обновление', info);
-  autoUpdater.logger.info('Доступно обновление', info);
+  logToFile(`Доступно обновление: ${info.version}`);
   
   dialog.showMessageBox(mainWindow, {
     type: 'info',
@@ -191,8 +213,7 @@ autoUpdater.on('update-available', (info) => {
 });
 
 autoUpdater.on('update-not-available', (info) => {
-  console.log('Обновлений нет', info);
-  autoUpdater.logger.info('Обновлений нет', info);
+  logToFile('Обновлений нет. Текущая версия: ' + app.getVersion());
   
   dialog.showMessageBox(mainWindow, {
     type: 'info',
@@ -204,8 +225,7 @@ autoUpdater.on('update-not-available', (info) => {
 });
 
 autoUpdater.on('error', (err) => {
-  console.log('Ошибка при обновлении', err);
-  autoUpdater.logger.error('Ошибка при обновлении', err);
+  logToFile(`Ошибка при обновлении: ${err.message}`);
   
   dialog.showMessageBox(mainWindow, {
     type: 'error',
@@ -217,18 +237,14 @@ autoUpdater.on('error', (err) => {
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
-  let log_message = `Скорость загрузки: ${progressObj.bytesPerSecond}`;
-  log_message = log_message + ' - Загружено ' + progressObj.percent + '%';
-  log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
-  console.log(log_message);
-  autoUpdater.logger.info(log_message);
+  const logMessage = `Загрузка обновления: ${progressObj.percent.toFixed(2)}% (${Math.round(progressObj.transferred / 1024)} / ${Math.round(progressObj.total / 1024)} КБ)`;
+  logToFile(logMessage);
   
   // Здесь можно добавить отображение прогресса загрузки в интерфейсе
 });
 
 autoUpdater.on('update-downloaded', (info) => {
-  console.log('Обновление загружено', info);
-  autoUpdater.logger.info('Обновление загружено', info);
+  logToFile(`Обновление загружено: ${info.version}`);
   
   dialog.showMessageBox(mainWindow, {
     type: 'info',
@@ -239,6 +255,7 @@ autoUpdater.on('update-downloaded', (info) => {
     cancelId: 1
   }).then(result => {
     if (result.response === 0) {
+      logToFile('Установка обновления и перезапуск...');
       autoUpdater.quitAndInstall(true, true);
     }
   });

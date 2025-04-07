@@ -1,25 +1,26 @@
 @echo off
 chcp 65001 > nul
-cls
+cd /d "%~dp0"
+cd ..
 
 :menu
 cls
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║               CrossCheck CASH - System Builder                ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo +---------------------------------------------------------------+
+echo :               CrossCheck CASH - System Builder                :
+echo +---------------------------------------------------------------+
 echo.
-echo  Выберите действие:
+echo  Select action:
 echo.
-echo  [1] Запустить приложение в режиме разработки
-echo  [2] Собрать инсталлятор (Windows)
-echo  [3] Собрать портативную версию (Windows)
-echo  [4] Установить/обновить зависимости
-echo  [5] Очистить кэш и временные файлы
-echo  [6] Опубликовать обновление на GitHub
-echo  [0] Выход
+echo  [1] Run application in development mode
+echo  [2] Build installer (Windows)
+echo  [3] Build portable version (Windows)
+echo  [4] Install/update dependencies
+echo  [5] Clean cache and temporary files
+echo  [6] Publish update to GitHub
+echo  [0] Exit
 echo.
 
-set /p choice="Ваш выбор: "
+set /p choice="Your choice: "
 
 if "%choice%"=="1" goto dev
 if "%choice%"=="2" goto installer
@@ -32,80 +33,74 @@ goto menu
 
 :dev
 echo.
-echo Запуск приложения в режиме разработки...
-cd ..
+echo Starting app in development mode...
 npm run dev
 goto menu
 
 :installer
 echo.
-echo Сборка инсталлятора для Windows...
-cd ..
+echo Building Windows installer...
 npm run dist -- --win --x64 --config.win.target=nsis
 echo.
-echo Инсталлятор создан в папке dist/
+echo Installer created in dist/ folder
 pause
 goto menu
 
 :portable
 echo.
-echo Сборка портативной версии для Windows...
-cd ..
+echo Building portable version for Windows...
 npm run dist -- --win --x64 --config.win.target=portable
 echo.
-echo Портативная версия создана в папке dist/
+echo Portable version created in dist/ folder
 pause
 goto menu
 
 :dependencies
 echo.
-echo Установка/обновление зависимостей...
-cd ..
+echo Installing/updating dependencies...
 npm install
 echo.
-echo Зависимости установлены.
+echo Dependencies installed.
 pause
 goto menu
 
 :clean
 echo.
-echo Очистка кэша и временных файлов...
-cd ..
+echo Cleaning cache and temporary files...
 if exist node_modules rmdir /s /q node_modules
 if exist dist rmdir /s /q dist
 if exist .cache rmdir /s /q .cache
 if exist package-lock.json del package-lock.json
 echo.
-echo Очистка завершена.
+echo Cleanup complete.
 pause
 goto menu
 
 :publish
 echo.
-echo Для публикации обновления вам понадобится токен доступа GitHub.
-echo Если у вас его нет, создайте его в настройках GitHub (Settings -^> Developer settings -^> Personal access tokens).
+echo For publishing, you'll need a GitHub token.
+echo If you don't have one, create it in GitHub Settings -^> Developer settings -^> Personal access tokens.
 echo.
-echo Перед публикацией убедитесь, что:
-echo  1. Вы обновили версию в package.json
-echo  2. У вас есть права на репозиторий
-echo  3. Вы сохранили токен GitHub как GH_TOKEN в переменных среды
+echo Before publishing, make sure:
+echo  1. You've updated the version in package.json
+echo  2. You have repository access
+echo  3. You have saved GitHub token as GH_TOKEN environmental variable
 echo.
-set /p confirm="Продолжить публикацию? (y/n): "
+set /p confirm="Continue publishing? (y/n): "
 if /i "%confirm%"=="y" (
-    cd ..
     npm run publish
     echo.
-    echo Публикация завершена.
+    echo Publication completed.
     pause
 ) else (
     echo.
-    echo Публикация отменена.
+    echo Publication cancelled.
     pause
 )
 goto menu
 
 :exit
 echo.
-echo До свидания!
+echo Goodbye!
 timeout /t 2 > nul
 exit 

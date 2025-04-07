@@ -1,7 +1,7 @@
 {
   "name": "crosscheck-cash",
   "productName": "CrossCheck CASH",
-  "version": "2.0.0",
+  "version": "1.0.1",
   "description": "CrossCheck CASH Application",
   "main": "electron/main.js",
   "scripts": {
@@ -44,7 +44,8 @@
       {
         "provider": "github",
         "owner": "Fr1z1ck",
-        "repo": "crosscheck-cash"
+        "repo": "crosscheck-cash",
+        "releaseType": "release"
       }
     ]
   },

@@ -412,7 +412,7 @@ function setupDragAndDrop() {
 // Функция установки темы
 function setTheme(themeName) {
     // Удаляем все классы тем с body
-    document.body.classList.remove('classic-theme', 'dark-theme');
+    document.body.classList.remove('classic-theme', 'dark-theme', 'blue-theme');
     
     // Добавляем новый класс темы
     document.body.classList.add(themeName + '-theme');
